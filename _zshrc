@@ -1,0 +1,95 @@
+#Emacs style key binding
+bindkey -v
+
+export LANG=ja_JP.UTF-8
+
+case ${UID} in
+0) #root
+  RPROMPT="%B%{[31m%}%/#{[m%}%b "
+  RPROMPT2="%B%{[31m%}%_#{[m%}%b "
+  SPROMPT="%B%{[31m%}%r is correct? [n,y,a,e]:{[m%}%b "
+  [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
+    RPROMPT="%{[37m%}${HOST%%.*} ${PROMPT}"
+  ;;
+*) #other users
+  RPROMPT="%{[36m%}%/%{[m%} "
+  RPROMPT2="%{[36m%}%_%{[m%} "
+  SPROMPT="%{[36m%}%r is correct? [n,y,a,e]:{[m%} "
+  [ -n "${REMOTEHOST}${SSH_CONNECTION}" ] &&
+    RPROMPT="%{[37m%}${HOST%%.*} ${PROMPT}"
+  ;;
+esac
+
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+
+#直前と同じコマンドをヒストリに追加しない
+setopt hist_ignore_dups
+
+#ヒストリの共有
+setopt share_history
+
+#補完機能の強化
+autoload -U compinit
+compinit -u
+
+#Ctrl-P,Ctrl-Nでコマンドを検索
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward-end
+bindkey "^N" history-beginning-search-forward-end
+
+#ベルを鳴らさない
+setopt no_beep
+
+#^Dでログアウトしないようにする
+setopt ignore_eof
+
+#以前のディレクトリを覚えておく　cd - [tab]にて呼び出し
+setopt auto_pushd
+
+#ディレクトリ名でcdする
+setopt auto_cd
+
+#コマンドミスを自動修正
+setopt correct
+
+#補完候補をつめて表示
+setopt list_packed
+
+#パスの最後につくスラッシュを自動的に削除しない
+setopt noautoremoveslash
+
+#括弧の対応を自動的に補完
+setopt auto_param_keys
+
+export LSCOLORS=gxfxcxdxbxegedabagacad
+
+#/usr/local/binのパスを追加
+export PATH=/usr/local/bin:$PATH
+
+#MacPortsのパスを追加
+export PATH=/opt/local/bin:/opt/local/sbin/:$PATH
+export MANPATH=/opt/local/man:$MANPATH
+
+#postgres84
+#export PATH=/opt/local/lib/postgresql84/bin:$PATH
+
+#scala
+export PATH=~/scala/bin:$PATH
+
+#suvbersion
+export SVN_EDITOR=vi
+
+#eval `ssh-agent`
+#ssh-add
+
+#rails
+alias r=rails
+
+#RVM(Ruby Version Manager)
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+
+#PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
